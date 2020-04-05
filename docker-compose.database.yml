@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+
+  postgresdb:
+    image: postgres:11
+    volumes:
+      - ./database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=development
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=adminpassword
+
+volumes:
+  mssql-vol:

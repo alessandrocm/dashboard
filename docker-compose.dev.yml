@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+
+  postgresdb:
+    image: postgres:11
+    volumes:
+      - ./database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=development
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - DB1_HOST=postgresdb
+      - DB1_TYPE=postgres
+      - DB1_DATABASE=development
+      - DB1_PORT=5432
+      - DB1_PASSWORD=adminpassword
+    depends_on:
+      - postgresdb
+      - mysqldb
+      - mssqldb
+
+volumes:
+  mssql-vol:
