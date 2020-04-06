@@ -76,15 +76,13 @@ export class Ellipse extends Tool {
     return [this.ellipse];
   }
 
-  onMouseMove(x: number, y: number): IDrawing[] {
+  onMouseMove(x: number, y: number): IDrawing[] | undefined {
     if (this.ellipse) {
       this.context.putImageData(this.imageData!, 0, 0);
       this.drawEllipse(this.ellipse, x, y);
 
       return [this.ellipse];
     }
-
-    return [];
   }
 
   onMouseUp(x: number, y: number): IDrawing[] | undefined {
@@ -96,8 +94,6 @@ export class Ellipse extends Tool {
       item.end = {x, y};
       return [item];
     }
-
-    return 
   }
 
 }

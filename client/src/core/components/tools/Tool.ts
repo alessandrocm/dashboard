@@ -27,7 +27,7 @@ export interface ITool {
 
   onMouseDown(x: number, y: number, color: string, size: number, fillColor: string): IDrawing[],
 
-  onMouseMove(x: number, y: number): IDrawing[];
+  onMouseMove(x: number, y: number): IDrawing[] | undefined;
 
   onMouseUp(x: number, y: number): IDrawing[] | undefined;
 
@@ -41,7 +41,7 @@ export abstract class Tool implements ITool {
 
   abstract onMouseDown(x: number, y: number, color: string, size: number, fillColor: string): IDrawing[];
 
-  abstract onMouseMove(x: number, y: number): IDrawing[];
+  abstract onMouseMove(x: number, y: number): IDrawing[] | undefined;
 
   abstract onMouseUp(x: number, y: number): IDrawing[] | undefined;
 

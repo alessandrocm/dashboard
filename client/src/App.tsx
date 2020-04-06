@@ -11,7 +11,7 @@ function App() {
           fillColor={''}
           height={500}
           size={1}
-          tool={'ELLIPSE'}
+          tool={'PENCIL'}
           width={800}
         />
         <a

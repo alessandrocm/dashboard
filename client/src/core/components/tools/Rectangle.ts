@@ -49,7 +49,7 @@ export class Rectangle extends Tool {
     return [this.rectangle];
   }
 
-  onMouseMove(x: number, y: number): IDrawing[] {
+  onMouseMove(x: number, y: number): IDrawing[] | undefined {
     if (this.rectangle) {
       this.context.putImageData(this.imageData!, 0, 0);
       this.context.save();
@@ -57,8 +57,6 @@ export class Rectangle extends Tool {
       this.context.restore();
       return [this.rectangle];
     }
-
-    return [];
   }
 
   onMouseUp(x: number, y: number): IDrawing[] | undefined {
@@ -70,8 +68,6 @@ export class Rectangle extends Tool {
       shape.end = {x, y};
       return [shape];
     }
-
-    return [];
   }
 
 }

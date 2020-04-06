@@ -49,27 +49,28 @@ export class Pencil extends Tool {
   
   }
 
-  onMouseMove(x: number, y: number): IStroke[] {
-    if (!this.stroke) return [];
+  onMouseMove(x: number, y: number): IStroke[] | undefined {
+    if (this.stroke) {
 
-    const coordinates = {x, y} as ICoordinate;
-    const begin = this.stroke.points.slice(-1)[0];
-    this.drawLine(this.stroke, begin, coordinates);
-    this.stroke.points.push(coordinates);
-    this.points.push(coordinates);
+      const coordinates = {x, y} as ICoordinate;
+      const begin = this.stroke.points.slice(-1)[0];
+      this.drawLine(this.stroke, begin, coordinates);
+      this.stroke.points.push(coordinates);
+      this.points.push(coordinates);
 
-    return [this.stroke];
+      return [this.stroke];
+    }
   }
 
   onMouseUp(x: number, y: number): IDrawing[] | undefined {
-    if (!this.stroke) return;
+    if (this.stroke) {
+      this.onMouseMove(x, y);
+      this.points = [];
+      const items = this.stroke;
+      this.stroke = null;
 
-    this.onMouseMove(x, y);
-    this.points = [];
-    const items = this.stroke;
-    this.stroke = null;
-
-    return [items];
+      return [items];
+    }
   }
 
 }

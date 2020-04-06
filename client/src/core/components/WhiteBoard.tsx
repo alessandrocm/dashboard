@@ -1,9 +1,15 @@
 import React, { RefObject } from 'react'
-import { ITool, Tool, ICoordinate } from './tools/Tool';
-import { Pencil } from './tools/Pencil';
-import { Tools } from './tools/enum';
-import { Rectangle } from './tools/Rectangle';
-import { Ellipse } from './tools/Ellipse';
+import {
+  ITool,
+  ICoordinate,
+  Tool,
+} from './tools/Tool';
+import {
+  Tools,
+  Rectangle,
+  Ellipse,
+  Pencil
+} from './tools';
 
 const toolBox = (tool: string, context: CanvasRenderingContext2D): Tool => {
   switch (tool) {
@@ -45,7 +51,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
 
   componentDidMount() {
     this.context = this.canvasRef?.current?.getContext('2d');
-    this.initTool(this.props.tool)
+    this.initTool(this.props.tool);
   }
 
   componentWillReceiveProps() {
