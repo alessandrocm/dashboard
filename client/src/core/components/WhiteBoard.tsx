@@ -1,13 +1,16 @@
 import React, { RefObject } from 'react'
 import { ITool, Tool, ICoordinate } from './tools/Tool';
 import { Pencil } from './tools/Pencil';
-
-enum Tools {
-  PENCIL = 'PENCIL'
-}
+import { Tools } from './tools/enum';
+import { Rectangle } from './tools/Rectangle';
+import { Ellipse } from './tools/Ellipse';
 
 const toolBox = (tool: string, context: CanvasRenderingContext2D): Tool => {
   switch (tool) {
+    case Tools.RECTANGLE:
+      return new Rectangle(context);
+    case Tools.ELLIPSE:
+      return new Ellipse(context);
     default:
       return new Pencil(context);
   }
@@ -28,7 +31,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
   context: CanvasRenderingContext2D | null | undefined;
   tool: ITool | undefined;
 
-  private initTool(tool: string = Tools.PENCIL) {
+  private initTool(tool: string) {
     if (this.context) {
       this.tool = toolBox(tool, this.context);
     }

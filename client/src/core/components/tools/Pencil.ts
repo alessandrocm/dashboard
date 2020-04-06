@@ -1,9 +1,26 @@
 import { generate } from 'shortid';
-import { Tool, IStroke, ICoordinate } from './Tool';
-
-export const PENCIL_TOOL = 'pencil';
+import { Tool, IStroke, ICoordinate, IDrawing } from './Tool';
+import { Tools } from './enum';
 
 export class Pencil extends Tool {
+
+  private stroke: IStroke | null = null;
+  private points: ICoordinate[] = [];
+
+  private drawLine = (item: IStroke, start: ICoordinate, end: ICoordinate) => {
+    this.context.save();
+    this.context.lineJoin = 'round';
+    this.context.lineCap = 'round';
+    this.context.beginPath();
+    this.context.lineWidth = item.size;
+    this.context.strokeStyle = item.color;
+    this.context.globalCompositeOperation = 'source-over';
+    this.context.moveTo(start.x, start.y);
+    this.context.lineTo(end.x, end.y);
+    this.context.closePath();
+    this.context.stroke();
+    this.context.restore();
+  }
   
   draw(item: IStroke, animate: boolean): void {
     let [time, index] = [0, 1];
@@ -18,17 +35,11 @@ export class Pencil extends Tool {
     }
   }
 
-  onDebounceMouseMove(): [IStroke | null, ICoordinate[]] {
-    const debouncedPoints = this.points;
-    this.points = [];
-    return [this.stroke, debouncedPoints];
-  }
-
   onMouseDown(x: number, y: number, color: string, size: number, fillColor: string): IStroke[] {
 
     this.stroke = {
       id: generate(),
-      tool: PENCIL_TOOL,
+      tool: Tools.PENCIL,
       color,
       size,
       points: [{x,y}]
@@ -50,7 +61,7 @@ export class Pencil extends Tool {
     return [this.stroke];
   }
 
-  onMouseUp(x: number, y: number): IStroke[] | undefined {
+  onMouseUp(x: number, y: number): IDrawing[] | undefined {
     if (!this.stroke) return;
 
     this.onMouseMove(x, y);
@@ -59,21 +70,6 @@ export class Pencil extends Tool {
     this.stroke = null;
 
     return [items];
-  }
-
-  private drawLine = (item: IStroke, start: ICoordinate, end: ICoordinate) => {
-    this.context.save();
-    this.context.lineJoin = 'round';
-    this.context.lineCap = 'round';
-    this.context.beginPath();
-    this.context.lineWidth = item.size;
-    this.context.strokeStyle = item.color;
-    this.context.globalCompositeOperation = 'source-over';
-    this.context.moveTo(start.x, start.y);
-    this.context.lineTo(end.x, end.y);
-    this.context.closePath();
-    this.context.stroke();
-    this.context.restore();
   }
 
 }

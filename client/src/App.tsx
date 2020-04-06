@@ -7,12 +7,12 @@ function App() {
     <div className="App">
       <header className="App-header">
         <WhiteBoard
-          color={'blue'}
-          fillColor={'blue'}
+          color={'black'}
+          fillColor={''}
           height={500}
-          size={3}
-          tool={'Pencil'}
-          width={500}
+          size={1}
+          tool={'ELLIPSE'}
+          width={800}
         />
         <a
           className="App-link"
