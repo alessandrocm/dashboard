@@ -1,0 +1,20 @@
+
+.Workspaces {
+  text-align: center;
+
+  .Workspaces-main {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  canvas {
+    background-color: rgb(94, 94, 94);
+  }
+
+}

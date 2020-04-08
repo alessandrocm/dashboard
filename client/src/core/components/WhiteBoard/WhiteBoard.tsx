@@ -3,13 +3,14 @@ import {
   ITool,
   ICoordinate,
   Tool,
-} from './tools/Tool';
+} from '../../tools/Tool';
 import {
   Tools,
   Rectangle,
   Ellipse,
   Pencil
-} from './tools';
+} from '../../tools';
+import { drawGrid } from '../../helpers/grid.helper';
 
 const toolBox = (tool: string, context: CanvasRenderingContext2D): Tool => {
   switch (tool) {
@@ -43,6 +44,12 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
     }
   }
 
+  private initCanvas() {
+    if (this.context) {
+      drawGrid(this.context, { height: this.props.height, width: this.props.width });
+    }
+  }
+
   constructor(props: WhiteBoardProps) {
     super(props);
 
@@ -51,6 +58,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
 
   componentDidMount() {
     this.context = this.canvasRef?.current?.getContext('2d');
+    this.initCanvas();
     this.initTool(this.props.tool);
   }
 

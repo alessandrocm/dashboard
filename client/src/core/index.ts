@@ -1,4 +1,4 @@
 
 export {
   WhiteBoard
-} from './components/WhiteBoard'
+} from './components/WhiteBoard/WhiteBoard'
