@@ -3,9 +3,9 @@ import { WhiteBoard } from '../../../../core';
 import { getHeight, getWidth, windowResized } from '../../../../core/helpers/window.helper';
 import { ICoordinate } from '../../../../core/tools/Tool';
 import { Header } from '..';
+import { Toolbar } from '../Toolbar/Toolbar';
 
 import './Workspaces.scss';
-import { Toolbar } from '../Toolbar/Toolbar';
 
 function calcluateStyles({height, width}: {height: number, width: number}) {
   const position: "absolute" = "absolute";
@@ -38,12 +38,10 @@ export function Workspaces() {
 
   const boardWidth = 3000;
   const boardHeight = 1000;
-
   const [dimensions, setDimensions] = useState({
     height: getHeight(),
     width: getWidth()
   });
-
   const [tool, setTool] = useState('PENCIL');
   const [viewPortStyle, setViewPortStyle] = useState(calcluateStyles(dimensions))
 
@@ -72,7 +70,7 @@ export function Workspaces() {
       <nav className="Workspaces-nav">Nav</nav>
       <section className="Workspaces-main">
         <Header>
-          <Toolbar onSelect={handleSelectTool} />
+          <Toolbar selected={tool} onSelect={handleSelectTool} />
         </Header>
         <div className="Workspaces-viewport" onWheel={handleScroll}>
           <div style={viewPortStyle}>

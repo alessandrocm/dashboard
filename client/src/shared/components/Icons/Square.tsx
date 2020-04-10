@@ -1,14 +1,14 @@
 import React from 'react';
-import fontawesome from '@fortawesome/fontawesome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquare } from '@fortawesome/fontawesome-free-solid';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
 
-fontawesome.library.add(faSquare);
+library.add(faSquare);
 
 export function SquareIcon() {
 
   return (
-    <FontAwesomeIcon icon='square' />
+    <FontAwesomeIcon icon={['far', 'square']} />
   );
 
 }

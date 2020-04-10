@@ -1,14 +1,14 @@
 import React from 'react';
-import fontawesome from '@fortawesome/fontawesome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle } from '@fortawesome/fontawesome-free-solid';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
 
-fontawesome.library.add(faCircle);
+library.add(faCircle);
 
 export function CircleIcon() {
 
   return (
-    <FontAwesomeIcon icon='circle' />
+    <FontAwesomeIcon icon={['far', 'circle']} />
   );
 
 }
