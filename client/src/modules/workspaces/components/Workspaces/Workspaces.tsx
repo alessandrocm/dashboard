@@ -42,8 +42,9 @@ export function Workspaces() {
   const [dimensions, setDimensions] = useState({
     height: getHeight(),
     width: getWidth()
-  })
+  });
 
+  const [tool, setTool] = useState('PENCIL');
   const [viewPortStyle, setViewPortStyle] = useState(calcluateStyles(dimensions))
 
   useEffect(() => {
@@ -58,8 +59,12 @@ export function Workspaces() {
     
   });
 
-  const onScroll = (event: WheelEvent<HTMLDivElement>) => {
+  const handleScroll = (event: WheelEvent<HTMLDivElement>) => {
     setViewPortStyle(updateStyles(viewPortStyle, event.deltaX, event.deltaY, {x: boardWidth, y: boardHeight}));
+  }
+
+  const handleSelectTool = (newTool: string) => {
+    setTool(newTool);
   }
 
   return (
@@ -67,9 +72,9 @@ export function Workspaces() {
       <nav className="Workspaces-nav">Nav</nav>
       <section className="Workspaces-main">
         <Header>
-          <Toolbar onSelect={() => console.log('Button selected')} />
+          <Toolbar onSelect={handleSelectTool} />
         </Header>
-        <div className="Workspaces-viewport" onWheel={onScroll}>
+        <div className="Workspaces-viewport" onWheel={handleScroll}>
           <div style={viewPortStyle}>
             <WhiteBoard
               color={'black'}
@@ -77,7 +82,7 @@ export function Workspaces() {
               height={boardHeight}
               margins={0}
               size={1}
-              tool={'PENCIL'}
+              tool={tool}
               width={boardWidth}
             />
           </div>

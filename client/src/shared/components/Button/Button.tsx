@@ -10,10 +10,17 @@ export interface ButtonProps {
 
 export function Button(props: ButtonProps) {
 
+  const handleClick = () => {
+    if (props.onClick) {
+      props.onClick();
+    }
+  };
+
   return (
     <button
       type='button'
       className={props.className}
+      onClick={handleClick}
       disabled={!!props.disabled}>{props.children}</button>
   );
 

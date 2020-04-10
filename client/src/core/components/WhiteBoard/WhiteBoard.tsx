@@ -61,7 +61,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
     this.initTool(this.props.tool);
   }
 
-  componentWillReceiveProps() {
+  componentDidUpdate() {
     if (!this.context || Object.entries(this.context).length === 0) {
       this.context = this.canvasRef?.current?.getContext('2d');
     }
