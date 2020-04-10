@@ -30,6 +30,7 @@ export interface WhiteBoardProps {
   size: number;
   tool: string;
   width: number;
+  margins: number;
 }
 
 export class WhiteBoard extends React.Component<WhiteBoardProps> {
@@ -39,14 +40,12 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
   tool: ITool | undefined;
 
   private initTool(tool: string) {
-    if (this.context) {
-      this.tool = toolBox(tool, this.context);
-    }
+    this.tool = toolBox(tool, this.context!);
   }
 
   private initCanvas() {
     if (this.context) {
-      drawGrid(this.context, { height: this.props.height, width: this.props.width });
+      drawGrid(this.context, { height: this.props.height, width: this.props.width, margins: this.props.margins });
     }
   }
 
@@ -63,6 +62,9 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
   }
 
   componentWillReceiveProps() {
+    if (!this.context || Object.entries(this.context).length === 0) {
+      this.context = this.canvasRef?.current?.getContext('2d');
+    }
     this.initTool(this.props.tool);
   }
 

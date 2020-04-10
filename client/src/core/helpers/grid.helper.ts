@@ -11,7 +11,7 @@ export interface IGridOptions {
 
 const defaults: IGridOptions = {
   fillStyle: '#fff',
-  strokeStyle: '#ddd',
+  strokeStyle: '#eee',
   lineWidth: 0.5,
   lineMaxWidth: 1,
   height: 800,
