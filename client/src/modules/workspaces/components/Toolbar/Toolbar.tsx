@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Button } from '../../../../shared/components';
-import { PencilIcon } from '../../../../shared/components/Icons/Pencil';
-import { SquareIcon } from '../../../../shared/components/Icons/Square';
-import { CircleIcon } from '../../../../shared/components/Icons/Circle';
-import { Tools } from '../../../../core/tools';
+import { Button } from 'shared/components';
+import { PencilIcon } from 'shared/components/Icons/Pencil';
+import { SquareIcon } from 'shared/components/Icons/Square';
+import { CircleIcon } from 'shared/components/Icons/Circle';
+import { Tools } from 'core/tools';
 
 import './Toolbar.scss';
 

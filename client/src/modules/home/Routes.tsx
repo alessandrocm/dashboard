@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Home } from './components';
-import { Workspaces } from '../workspaces/components';
+import { Workspaces } from 'modules/workspaces/components';
 
 export function Routes() {
 

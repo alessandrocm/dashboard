@@ -1,13 +1,13 @@
 import React, { WheelEvent, useState, useEffect } from 'react';
-import { WhiteBoard } from '../../../../core';
-import { getHeight, getWidth, windowResized } from '../../../../core/helpers/window.helper';
-import { ICoordinate } from '../../../../core/tools/Tool';
+import { WhiteBoard } from 'core';
+import { getHeight, getWidth, windowResized } from 'core/helpers/window.helper';
+import { ICoordinate } from 'core/tools/Tool';
 import { Header } from '..';
 import { Toolbar } from '../Toolbar/Toolbar';
 
 import './Workspaces.scss';
-import { toolShortcut } from '../../hooks/keys';
-import { windowResize } from '../../hooks/window';
+import { toolShortcut } from 'modules/workspaces/hooks/keys';
+import { windowResize } from 'modules/workspaces/hooks/window';
 
 function calcluateStyles({height, width}: {height: number, width: number}) {
   const position: "absolute" = "absolute";
