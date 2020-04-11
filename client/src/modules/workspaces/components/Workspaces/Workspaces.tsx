@@ -6,6 +6,8 @@ import { Header } from '..';
 import { Toolbar } from '../Toolbar/Toolbar';
 
 import './Workspaces.scss';
+import { toolShortcut } from '../../hooks/keys';
+import { windowResize } from '../../hooks/window';
 
 function calcluateStyles({height, width}: {height: number, width: number}) {
   const position: "absolute" = "absolute";
@@ -45,17 +47,11 @@ export function Workspaces() {
   const [tool, setTool] = useState('PENCIL');
   const [viewPortStyle, setViewPortStyle] = useState(calcluateStyles(dimensions))
 
-  useEffect(() => {
-    
-    const resized = () => {
-      setDimensions(windowResized());
-      setViewPortStyle(calcluateStyles(dimensions));
-    };
-    window.addEventListener('resize', resized);
-
-    return () => window.removeEventListener('resize', resized);
-    
-  });
+  useEffect(toolShortcut(setTool), []);
+  useEffect(windowResize(() => {
+    setDimensions(windowResized());
+    setViewPortStyle(calcluateStyles(dimensions));
+  }));
 
   const handleScroll = (event: WheelEvent<HTMLDivElement>) => {
     setViewPortStyle(updateStyles(viewPortStyle, event.deltaX, event.deltaY, {x: boardWidth, y: boardHeight}));
