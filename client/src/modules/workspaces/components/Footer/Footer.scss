@@ -1,0 +1,22 @@
+@import '../../../../core/styles/colors';
+
+.Footer {
+  background-color: $grey3;
+  border-top: 2px solid $grey2;
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+  padding-top: 4px;
+  padding-left: 32px;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  z-index: 100;
+
+  .Footer-items {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+}

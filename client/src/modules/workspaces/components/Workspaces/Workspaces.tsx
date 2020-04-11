@@ -2,12 +2,10 @@ import React, { WheelEvent, useState, useEffect } from 'react';
 import { WhiteBoard } from 'core';
 import { getHeight, getWidth, windowResized } from 'core/helpers/window.helper';
 import { ICoordinate } from 'core/tools/Tool';
-import { Header } from '..';
-import { Toolbar } from '../Toolbar/Toolbar';
-
-import './Workspaces.scss';
 import { toolShortcut } from 'modules/workspaces/hooks/keys';
 import { windowResize } from 'modules/workspaces/hooks/window';
+import { Header, Footer, Toolbar, Navigation } from '..';
+import './Workspaces.scss';
 
 function calcluateStyles({height, width}: {height: number, width: number}) {
   const position: "absolute" = "absolute";
@@ -63,7 +61,7 @@ export function Workspaces() {
 
   return (
     <div className="Workspaces">
-      <nav className="Workspaces-nav">Nav</nav>
+      <Navigation />
       <section className="Workspaces-main">
         <Header>
           <Toolbar selected={tool} onSelect={handleSelectTool} />
@@ -81,6 +79,7 @@ export function Workspaces() {
             />
           </div>
         </div>
+        <Footer />
       </section>
     </div>
   );
