@@ -1,27 +1,19 @@
-import React, { RefObject } from 'react'
+import React, { WheelEvent, RefObject } from 'react'
 import {
   ITool,
   ICoordinate,
   Tool,
-} from '../../tools/Tool';
+} from 'core/tools/Tool';
 import {
   Tools,
   Rectangle,
   Ellipse,
   Pencil
-} from '../../tools';
-import { drawGrid } from '../../helpers/grid.helper';
+} from 'core/tools';
+import { drawGrid } from 'core/helpers/grid.helper';
+import { getWidth, getHeight } from 'core/helpers/window.helper';
 
-const toolBox = (tool: string, context: CanvasRenderingContext2D): Tool => {
-  switch (tool) {
-    case Tools.RECTANGLE:
-      return new Rectangle(context);
-    case Tools.ELLIPSE:
-      return new Ellipse(context);
-    default:
-      return new Pencil(context);
-  }
-}
+import './WhiteBoard.scss';
 
 export interface WhiteBoardProps {
   color: string;
@@ -33,14 +25,22 @@ export interface WhiteBoardProps {
   margins: number;
 }
 
-export class WhiteBoard extends React.Component<WhiteBoardProps> {
+export interface WhiteBoardState {
+  position: "absolute";
+  windowHeight: number;
+  windowWidth: number;
+  top: number;
+  left: number;
+}
+
+export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState> {
 
   canvasRef: RefObject<HTMLCanvasElement> | undefined;
   context: CanvasRenderingContext2D | null | undefined;
   tool: ITool | undefined;
 
   private initTool(tool: string) {
-    this.tool = toolBox(tool, this.context!);
+    this.tool = this.selectTool(tool, this.context!);
   }
 
   private initCanvas() {
@@ -53,6 +53,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
     super(props);
 
     this.canvasRef = React.createRef<HTMLCanvasElement>();
+    this.state = this.calcluateState();
   }
 
   componentDidMount() {
@@ -87,6 +88,10 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
     const data = this.tool?.onMouseMove(x, y);
   }
 
+  handleScroll = (event: WheelEvent<HTMLDivElement>) => {
+    this.setState(this.updatePosition(this.state, event.deltaX, event.deltaY, {x: this.props.width, y: this.props.height}));
+  }
+
   // Helper Functions
   getCursorPosition = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>): ICoordinate => {
     const { top = 0, left = 0 } = this.canvasRef?.current?.getBoundingClientRect() || {};
@@ -96,19 +101,64 @@ export class WhiteBoard extends React.Component<WhiteBoardProps> {
     };
   }
 
+  selectTool = (tool: string, context: CanvasRenderingContext2D): Tool => {
+    switch (tool) {
+      case Tools.RECTANGLE:
+        return new Rectangle(context);
+      case Tools.ELLIPSE:
+        return new Ellipse(context);
+      default:
+        return new Pencil(context);
+    }
+  }
+
+  calcluateState = () => {
+    const position: "absolute" = "absolute";
+    const windowHeight = getHeight();
+    const windowWidth = getWidth();
+    return {
+      position,
+      windowHeight,
+      windowWidth,
+      top: 100,
+      left: 240
+    };
+  }
+
+  updatePosition = (state: WhiteBoardState, deltaX: number, deltaY: number, boardDimensions: ICoordinate) => {
+    const shiftX = (state.left - deltaX);
+    const shiftY = (state.top - deltaY);
+    const [lowerXBound, upperXBound] = [(-1 * (100 + (boardDimensions.x - getWidth()))), 300];
+    const [lowerYBound, upperYBound] = [(-1 * (100 + (boardDimensions.y - getHeight()))), 300];
+  
+    const left = (boardDimensions.x > getWidth()) && (shiftX > lowerXBound && shiftX < upperXBound) ? shiftX : state.left;
+    const top = (boardDimensions.y > getHeight()) && (shiftY > lowerYBound && shiftY < upperYBound) ? shiftY : state.top;
+  
+    return {
+      ...state,
+      left,
+      top,
+    };
+  }
+
   render() {
     const {width, height} = this.props;
+    const { position, left, top } = this.state;
 
     return (
-      <canvas
-        ref={this.canvasRef}
-        onMouseDown={this.onMouseDown}
-        onMouseMove={this.onMouseMove}
-        onMouseUp={this.onMouseUp}
-        onMouseOut={this.onMouseUp}
-        width={width}
-        height={height}
-      />
+      <div className="WhiteBoard-viewport" onWheel={this.handleScroll}>
+        <div style={{position, left, top}}>
+          <canvas
+            ref={this.canvasRef}
+            onMouseDown={this.onMouseDown}
+            onMouseMove={this.onMouseMove}
+            onMouseUp={this.onMouseUp}
+            onMouseOut={this.onMouseUp}
+            width={width}
+            height={height}
+          />
+        </div>
+      </div>
     );
   }
 
