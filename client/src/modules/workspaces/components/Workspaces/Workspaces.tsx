@@ -18,12 +18,7 @@ export function Workspaces() {
     setTool(newTool);
   }
 
-  const handleZoom = (value: number) => {
-    const step = 0.1 * value;
-    const scale = zoom + step;
-    if (scale <= 0.5 || scale >= 1.5) {
-      return;
-    }
+  const handleZoom = (scale: number) => {
     setZoom(scale);
   }
 
@@ -47,7 +42,7 @@ export function Workspaces() {
         <Footer>
           <Zoombar
             onZoom={handleZoom}
-            zoom={1}
+            zoom={zoom}
           />
         </Footer>
       </section>

@@ -10,3 +10,5 @@ export { PencilIcon } from './Icons/Pencil';
 export { PlusIcon } from './Icons/Plus';
 
 export { SquareIcon } from './Icons/Square';
+
+export { Slider } from './Slider/Slider';

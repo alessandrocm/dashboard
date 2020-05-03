@@ -1,0 +1,8 @@
+
+.Slider {
+  width: 100%;
+
+  &.vertical {
+    -webkit-appearance: slider-vertical;
+  }
+}
