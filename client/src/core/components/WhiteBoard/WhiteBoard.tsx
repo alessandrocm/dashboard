@@ -19,7 +19,8 @@ export interface WhiteBoardProps {
   color: string;
   fillColor: string;
   height: number;
-  size: number;
+  lineSize: number;
+  scale: number;
   tool: string;
   width: number;
   margins: number;
@@ -73,8 +74,8 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
   onMouseDown = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (this.tool) {
       const {x, y} = this.getCursorPosition(event);
-      const { color, size, fillColor } = this.props;
-      const data = this.tool.onMouseDown(x, y, color, size, fillColor);
+      const { color, lineSize, fillColor } = this.props;
+      const data = this.tool.onMouseDown(x, y, color, lineSize, fillColor);
     }
   }
 
@@ -89,15 +90,15 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
   }
 
   handleScroll = (event: WheelEvent<HTMLDivElement>) => {
-    this.setState(this.updatePosition(this.state, event.deltaX, event.deltaY, {x: this.props.width, y: this.props.height}));
+    this.setState(this.updatePosition(this.state, event.deltaX, event.deltaY, this.props.scale, {x: this.props.width, y: this.props.height}));
   }
 
   // Helper Functions
   getCursorPosition = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>): ICoordinate => {
     const { top = 0, left = 0 } = this.canvasRef?.current?.getBoundingClientRect() || {};
     return {
-      x: event.clientX - left,
-      y: event.clientY - top,
+      x: (event.clientX - left) / this.props.scale,
+      y: (event.clientY - top) / this.props.scale,
     };
   }
 
@@ -125,14 +126,18 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
     };
   }
 
-  updatePosition = (state: WhiteBoardState, deltaX: number, deltaY: number, boardDimensions: ICoordinate) => {
+  updatePosition = (state: WhiteBoardState, deltaX: number, deltaY: number, scale: number, boardDimensions: ICoordinate) => {
     const shiftX = (state.left - deltaX);
     const shiftY = (state.top - deltaY);
-    const [lowerXBound, upperXBound] = [(-1 * (100 + (boardDimensions.x - getWidth()))), 300];
-    const [lowerYBound, upperYBound] = [(-1 * (100 + (boardDimensions.y - getHeight()))), 300];
+    const correctingX = Math.abs(0 - shiftX) < Math.abs(0 - state.left);
+    const correctingY = Math.abs(0 - shiftY) < Math.abs(0 - state.top);
+    const boardX = (boardDimensions.x * scale);
+    const boardY = (boardDimensions.y * scale);
+    const [lowerXBound, upperXBound] = [(-1 * (100 + (boardX - getWidth()))), 300];
+    const [lowerYBound, upperYBound] = [(-1 * (100 + (boardY - getHeight()))), 100];
   
-    const left = (boardDimensions.x > getWidth()) && (shiftX > lowerXBound && shiftX < upperXBound) ? shiftX : state.left;
-    const top = (boardDimensions.y > getHeight()) && (shiftY > lowerYBound && shiftY < upperYBound) ? shiftY : state.top;
+    const left = (correctingX || (shiftX > lowerXBound && shiftX < upperXBound)) ? shiftX : state.left;
+    const top = (correctingY || (shiftY > lowerYBound && shiftY < upperYBound)) ? shiftY : state.top;
   
     return {
       ...state,
@@ -142,12 +147,14 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
   }
 
   render() {
-    const {width, height} = this.props;
+    const {width, height, scale} = this.props;
     const { position, left, top } = this.state;
+    const transform = `scale(${scale})`;
+    const transformOrigin = '0 0';
 
     return (
       <div className="WhiteBoard-viewport" onWheel={this.handleScroll}>
-        <div style={{position, left, top}}>
+        <div style={{position, left, top, transform, transformOrigin}}>
           <canvas
             ref={this.canvasRef}
             onMouseDown={this.onMouseDown}

@@ -1,0 +1,23 @@
+@import '../../../../core/styles/colors';
+
+.Zoombar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 0 0 auto;
+  height: 24px;
+  width: 200px;
+
+  .Zoombar-button {
+    background-color: $grey3;
+    border: 1px solid $white;
+    border-radius: 16px;
+    color: $white;
+    cursor: pointer;
+    font-size: 14px;
+    height: 20px;
+    padding: 0px;
+    width: 20px;
+  }
+
+}
