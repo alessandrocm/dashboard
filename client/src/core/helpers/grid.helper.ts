@@ -1,3 +1,6 @@
+import { fabric } from 'fabric';
+import { getWidth, getHeight } from './window.helper';
+import merge from 'lodash.merge';
 
 export interface IGridOptions {
   fillStyle: string;
@@ -61,4 +64,45 @@ export function drawGrid(context: CanvasRenderingContext2D, options: Partial<IGr
     context.stroke();
   }
 
+}
+
+export interface ICanvasGridLinesOptions {
+  stroke: string;
+  strokeWidth: number;
+  selectable?: false;
+}
+
+export interface ICanvasGridOptions {
+  distance: number;
+  width: number;
+  height: number;
+  lines: ICanvasGridLinesOptions;
+}
+
+export const gridDefaults: ICanvasGridOptions = {
+  distance: 10,
+  width: getWidth(),
+  height: getHeight(),
+  lines: {
+    stroke: '#eee',
+    strokeWidth: 1,
+    selectable: false,
+  }
+}
+
+export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions) {
+  const gridOptions = merge({}, gridDefaults, options);
+  const gridLength = gridOptions.width /  gridOptions.distance;
+
+  for (var i = 0; i < gridLength; i++) {
+    var distance   = i * gridOptions.distance,
+        horizontal = new fabric.Line([ distance, 0, distance, gridOptions.width], gridOptions.lines),
+        vertical   = new fabric.Line([ 0, distance, gridOptions.width, distance], gridOptions.lines);
+    canvas.add(horizontal);
+    canvas.add(vertical);
+    if(i%5 === 0){
+      horizontal.set({stroke: '#cccccc'});
+      vertical.set({stroke: '#cccccc'});
+    };
+  }
 }

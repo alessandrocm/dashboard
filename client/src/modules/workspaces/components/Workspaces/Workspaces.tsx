@@ -4,6 +4,7 @@ import { toolShortcut } from 'modules/workspaces/hooks/keys';
 import { Header, Footer, Toolbar, Navigation } from '..';
 import { Zoombar } from '../Zoombar/Zoombar';
 import './Workspaces.scss';
+import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
 
 export function Workspaces() {
 
@@ -29,7 +30,7 @@ export function Workspaces() {
         <Header>
           <Toolbar selected={tool} onSelect={handleSelectTool} />
         </Header>
-        <WhiteBoard
+        <WhiteBoard2
           color={'black'}
           fillColor={''}
           height={boardHeight}
