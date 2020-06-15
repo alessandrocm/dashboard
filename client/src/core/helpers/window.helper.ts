@@ -12,7 +12,7 @@ export function getHeight() {
   return win.innerHeight || doc.documentElement.clientHeight || body.clientHeight;
 }
 
-export function windowResized() {
+export function windowSize() {
   return {
     height: getHeight(),
     width: getWidth()

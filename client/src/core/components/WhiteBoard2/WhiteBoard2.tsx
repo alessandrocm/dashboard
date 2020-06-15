@@ -38,9 +38,14 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
         gridPattern(this.canvas);
     }
 
-    componentDidUpdate() {
-        const { scale } = this.props;
+    componentDidUpdate(prevProps: WhiteBoard2Props) {
+        const { scale, height, width } = this.props;
         this.canvas?.setZoom(scale);
+        if (height !== prevProps.height || width !== prevProps.width) {
+            this.canvas?.setWidth(width);
+            this.canvas?.setHeight(width);
+            this.canvas?.calcOffset();
+        }
     }
 
     calculateState() {
@@ -59,13 +64,17 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
     }
 
     updatePosition(state: WhiteBoard2State, deltaX: number, deltaY: number, scale: number, boardDimensions: ICoordinate) {
-        const shiftX = (state.left + deltaX);
-        const shiftY = (state.top + deltaY);
-      
+        const boardX = (boardDimensions.x * scale);
+        const boardY = (boardDimensions.y * scale);
+        // If shift values are larger than board width or height, revert back to previous values
+        // If previous values are larger than board (due to zooming), revert to board height or width
+        const left = (Math.abs(state.left + deltaX) < boardX) ? state.left + deltaX : (Math.abs(state.left) < boardX) ? state.left : (boardX - 10);
+        const top = (Math.abs(state.top + deltaY) < boardY) ? state.top + deltaY: (Math.abs(state.top) < boardY) ? state.top : (boardY - 10);
+
         return {
             ...state,
-            left: shiftX,
-            top: shiftY,
+            left,
+            top,
         };
     }
 

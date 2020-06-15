@@ -5,15 +5,16 @@ import { Header, Footer, Toolbar, Navigation } from '..';
 import { Zoombar } from '../Zoombar/Zoombar';
 import './Workspaces.scss';
 import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
-import { getHeight, getWidth } from 'core/helpers/window.helper';
+import { windowSize } from 'core/helpers/window.helper';
+import { windowResize } from 'modules/workspaces/hooks/window';
 
 export function Workspaces() {
 
-  const boardWidth = getWidth();
-  const boardHeight = getHeight();
+  const [boardSize, setBoardSize] = useState(windowSize());
   const [tool, setTool] = useState('PENCIL');
   const [zoom, setZoom] = useState(1);
 
+  useEffect(windowResize(() => setBoardSize(windowSize())));
   useEffect(toolShortcut(setTool), []);
 
   const handleSelectTool = (newTool: string) => {
@@ -23,6 +24,9 @@ export function Workspaces() {
   const handleZoom = (scale: number) => {
     setZoom(scale);
   }
+
+  const boardWidth = boardSize.width;
+  const boardHeight = boardSize.height;
 
   return (
     <div className="Workspaces">

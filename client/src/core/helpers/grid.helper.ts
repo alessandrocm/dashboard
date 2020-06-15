@@ -115,7 +115,7 @@ export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions)
   });
   canvas.add(rect);
 
-  for (let x = startValue; x < gridWidth; x += 10) {
+  for (let x = startValue + 10; x < gridWidth; x += 10) {
     const vertical = new fabric.Line([x, margin, x, gridHeight], lines);
     canvas.add(vertical);
 
@@ -124,7 +124,7 @@ export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions)
     };
   }
 
-  for (let y = startValue; y < gridHeight; y += 10) {
+  for (let y = startValue + 10; y < gridHeight; y += 10) {
     const horizontal = new fabric.Line([margin, y, gridWidth, y], lines);
     canvas.add(horizontal);
 
