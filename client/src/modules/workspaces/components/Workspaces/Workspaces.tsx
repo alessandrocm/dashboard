@@ -5,11 +5,12 @@ import { Header, Footer, Toolbar, Navigation } from '..';
 import { Zoombar } from '../Zoombar/Zoombar';
 import './Workspaces.scss';
 import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
+import { getHeight, getWidth } from 'core/helpers/window.helper';
 
 export function Workspaces() {
 
-  const boardWidth = 3000;
-  const boardHeight = 1000;
+  const boardWidth = getWidth();
+  const boardHeight = getHeight();
   const [tool, setTool] = useState('PENCIL');
   const [zoom, setZoom] = useState(1);
 

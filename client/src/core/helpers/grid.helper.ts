@@ -1,5 +1,4 @@
 import { fabric } from 'fabric';
-import { getWidth, getHeight } from './window.helper';
 import merge from 'lodash.merge';
 
 export interface IGridOptions {
@@ -73,16 +72,16 @@ export interface ICanvasGridLinesOptions {
 }
 
 export interface ICanvasGridOptions {
-  distance: number;
+  margin: number;
   width: number;
   height: number;
   lines: ICanvasGridLinesOptions;
 }
 
 export const gridDefaults: ICanvasGridOptions = {
-  distance: 10,
-  width: getWidth(),
-  height: getHeight(),
+  margin: 10,
+  height: 800,
+  width: 2000,
   lines: {
     stroke: '#eee',
     strokeWidth: 1,
@@ -92,17 +91,46 @@ export const gridDefaults: ICanvasGridOptions = {
 
 export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions) {
   const gridOptions = merge({}, gridDefaults, options);
-  const gridLength = gridOptions.width /  gridOptions.distance;
+  const {
+    margin,
+    width,
+    height,
+    lines,
+  } = gridOptions;
 
-  for (var i = 0; i < gridLength; i++) {
-    var distance   = i * gridOptions.distance,
-        horizontal = new fabric.Line([ distance, 0, distance, gridOptions.width], gridOptions.lines),
-        vertical   = new fabric.Line([ 0, distance, gridOptions.width, distance], gridOptions.lines);
-    canvas.add(horizontal);
+  const gridWidth = width;
+  const gridHeight = height;
+  const startValue = margin;
+
+  const rect = new fabric.Rect({
+    left: margin,
+    top: margin,
+    fill: 'white',
+    width: (width - margin),
+    height: (height - margin),
+    selectable: false,
+    stroke: '#ccc',
+    strokeWidth: 1,
+    strokeDashArray: [10, 10],
+  });
+  canvas.add(rect);
+
+  for (let x = startValue; x < gridWidth; x += 10) {
+    const vertical = new fabric.Line([x, margin, x, gridHeight], lines);
     canvas.add(vertical);
-    if(i%5 === 0){
-      horizontal.set({stroke: '#cccccc'});
+
+    if((x - startValue) % 50 === 0){
       vertical.set({stroke: '#cccccc'});
     };
   }
+
+  for (let y = startValue; y < gridHeight; y += 10) {
+    const horizontal = new fabric.Line([margin, y, gridWidth, y], lines);
+    canvas.add(horizontal);
+
+    if((y - startValue) % 50 === 0){
+      horizontal.set({stroke: '#cccccc'});
+    };
+  }
+
 }
