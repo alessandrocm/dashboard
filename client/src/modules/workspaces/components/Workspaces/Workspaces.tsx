@@ -3,21 +3,22 @@ import { WhiteBoard } from 'core';
 import { toolShortcut } from 'modules/workspaces/hooks/keys';
 import { Header, Footer, Toolbar, Navigation } from '..';
 import { Zoombar } from '../Zoombar/Zoombar';
-import './Workspaces.scss';
 import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
 import { windowSize } from 'core/helpers/window.helper';
 import { windowResize } from 'modules/workspaces/hooks/window';
+import './Workspaces.scss';
+import { Tools } from 'core/tools';
 
 export function Workspaces() {
 
   const [boardSize, setBoardSize] = useState(windowSize());
-  const [tool, setTool] = useState('PENCIL');
+  const [tool, setTool] = useState(Tools.MARKER);
   const [zoom, setZoom] = useState(1);
 
   useEffect(windowResize(() => setBoardSize(windowSize())));
   useEffect(toolShortcut(setTool), []);
 
-  const handleSelectTool = (newTool: string) => {
+  const handleSelectTool = (newTool: Tools) => {
     setTool(newTool);
   }
 

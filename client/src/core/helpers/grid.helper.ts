@@ -112,11 +112,15 @@ export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions)
     stroke: '#ccc',
     strokeWidth: 1,
     strokeDashArray: [10, 10],
+    lockMovementX: true,
+    lockMovementY: true,
+    name: '@@background'
   });
   canvas.add(rect);
 
   for (let x = startValue + 10; x < gridWidth; x += 10) {
     const vertical = new fabric.Line([x, margin, x, gridHeight], lines);
+    vertical.name = '@@background';
     canvas.add(vertical);
 
     if((x - startValue) % 50 === 0){
@@ -126,6 +130,7 @@ export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions)
 
   for (let y = startValue + 10; y < gridHeight; y += 10) {
     const horizontal = new fabric.Line([margin, y, gridWidth, y], lines);
+    horizontal.name = '@@background';
     canvas.add(horizontal);
 
     if((y - startValue) % 50 === 0){

@@ -1,6 +1,6 @@
 import { Tools } from 'core/tools';
 
-export function toolShortcut(handleEffect: (tool: string) => void) {
+export function toolShortcut(handleEffect: (tool: Tools) => void) {
 
   return () => {
 

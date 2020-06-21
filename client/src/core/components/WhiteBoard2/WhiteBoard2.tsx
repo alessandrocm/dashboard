@@ -3,6 +3,11 @@ import { fabric } from 'fabric';
 import { gridPattern } from 'core/helpers/grid.helper';
 import { ICoordinate } from 'core/tools/Tool';
 import { getWidth, getHeight } from 'core/helpers/window.helper';
+import { FabricTool, IFabricTool } from 'core/tools/fabric/FabricTool';
+import { Tools } from 'core/tools';
+import { Marker } from 'core/tools/fabric/Marker';
+import { Rectangle } from 'core/tools/fabric/Rectangle';
+import { Ellipse } from 'core/tools/fabric/Ellipse';
 
 export interface WhiteBoard2Props {
     color: string;
@@ -26,6 +31,7 @@ export interface WhiteBoard2State {
 export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2State> {
 
     private canvas?: fabric.Canvas;
+    private tool: IFabricTool | null = null;
 
     constructor(props: WhiteBoard2Props) {
         super(props);
@@ -35,17 +41,49 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
     componentDidMount() {
         this.canvas = new fabric.Canvas('canvas-whiteboard');
         this.canvas.backgroundColor = '#eee';
+        this.tool = this.selectTool('', this.canvas);
         gridPattern(this.canvas);
     }
 
     componentDidUpdate(prevProps: WhiteBoard2Props) {
-        const { scale, height, width } = this.props;
+        const { scale, height, width, tool } = this.props;
         this.canvas?.setZoom(scale);
         if (height !== prevProps.height || width !== prevProps.width) {
             this.canvas?.setWidth(width);
             this.canvas?.setHeight(width);
             this.canvas?.calcOffset();
         }
+        if (prevProps.tool !== tool) {
+            this.tool = this.selectTool(tool, this.canvas!);
+        }
+    }
+
+    // Helper Functions
+    getCursorPosition = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): ICoordinate => {
+        const { top = 0, left = 0 } = {}; // TODO: bounding rectangle?
+        return {
+            x: (event.clientX - left) / this.props.scale,
+            y: (event.clientY - top) / this.props.scale,
+        };
+    }
+
+    selectTool = (tool: string, canvas: fabric.Canvas): FabricTool | null => {
+
+        if (this.tool) {
+            this.tool.discard();
+        }
+
+        switch (tool) {
+            case Tools.RECTANGLE:
+                return new Rectangle(canvas, this.props);
+            case Tools.MARKER:
+                return new Marker(canvas, this.props);
+            case Tools.ELLIPSE:
+                return new Ellipse(canvas, this.props);
+            default:
+                return null;
+        }
+
     }
 
     calculateState() {
