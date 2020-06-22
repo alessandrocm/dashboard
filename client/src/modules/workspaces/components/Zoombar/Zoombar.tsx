@@ -2,6 +2,7 @@ import './Zoombar.scss';
 import React from 'react';
 import { Button } from 'shared/components';
 import { PlusIcon, MinusIcon, Slider } from 'shared/components';
+import { zooming } from 'core/helpers/zoom.helper';
 
 export interface ZoombarProps {
   zoom: number;
@@ -22,20 +23,10 @@ export function Zoombar(zoomProps: ZoombarProps) {
 
   const props = Object.assign({}, defaultProps, zoomProps);
 
-  const zoomStep = (value: number) => {
-    const step = 0.1 * value;
-    const scale = Number.parseFloat((props.zoom + step).toPrecision(2));
-    if (scale < .5 || scale > 1.5) {
-      return props.zoom;
-    }
-
-    return scale;
-  }
-
   const handleZoomStep = (value: number) =>
     () => {
       if (zoomProps.onZoom) {
-        zoomProps.onZoom(zoomStep(value));
+        zoomProps.onZoom(value);
       }
     }
   

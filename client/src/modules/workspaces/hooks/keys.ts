@@ -7,7 +7,7 @@ export function toolShortcut(handleEffect: (tool: Tools) => void) {
     const keyHandler = (e: KeyboardEvent) => {
       switch(e.key) {
         case '1':
-          return handleEffect(Tools.PENCIL);
+          return handleEffect(Tools.MARKER);
         case '2':
           return handleEffect(Tools.RECTANGLE);
         case '3':

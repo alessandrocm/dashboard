@@ -8,6 +8,7 @@ import { Tools } from 'core/tools';
 import { Marker } from 'core/tools/fabric/Marker';
 import { Rectangle } from 'core/tools/fabric/Rectangle';
 import { Ellipse } from 'core/tools/fabric/Ellipse';
+import { Selector } from 'core/tools/fabric/Selector';
 
 export interface WhiteBoard2Props {
     color: string;
@@ -18,6 +19,7 @@ export interface WhiteBoard2Props {
     tool: string;
     width: number;
     margins: number;
+    onZoom: (value: number) => void;
 }
 
 export interface WhiteBoard2State {
@@ -41,13 +43,16 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
     componentDidMount() {
         this.canvas = new fabric.Canvas('canvas-whiteboard');
         this.canvas.backgroundColor = '#eee';
-        this.tool = this.selectTool('', this.canvas);
+        this.canvas.hoverCursor = 'default';
+        this.tool = this.selectTool(this.props.tool, this.canvas);
         gridPattern(this.canvas);
     }
 
     componentDidUpdate(prevProps: WhiteBoard2Props) {
         const { scale, height, width, tool } = this.props;
-        this.canvas?.setZoom(scale);
+        if (scale !== prevProps.scale) {
+            this.zoomCanvas(scale);
+        }
         if (height !== prevProps.height || width !== prevProps.width) {
             this.canvas?.setWidth(width);
             this.canvas?.setHeight(width);
@@ -59,18 +64,16 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
     }
 
     // Helper Functions
-    getCursorPosition = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): ICoordinate => {
-        const { top = 0, left = 0 } = {}; // TODO: bounding rectangle?
-        return {
-            x: (event.clientX - left) / this.props.scale,
-            y: (event.clientY - top) / this.props.scale,
-        };
+    zoomCanvas(scale: number) {
+        const point = this.canvas?.getVpCenter();
+        this.canvas?.zoomToPoint(point!, scale);
     }
 
     selectTool = (tool: string, canvas: fabric.Canvas): FabricTool | null => {
 
         if (this.tool) {
             this.tool.discard();
+            this.tool = null;
         }
 
         switch (tool) {
@@ -81,14 +84,13 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
             case Tools.ELLIPSE:
                 return new Ellipse(canvas, this.props);
             default:
-                return null;
+                return new Selector(canvas, this.props);
         }
 
     }
 
     calculateState() {
-        this.canvas?.setZoom(0);
-
+        this.canvas?.setZoom(this.props.scale);
         const position: "fixed" = "fixed";
         const windowHeight = getHeight();
         const windowWidth = getWidth();
@@ -116,17 +118,28 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
         };
     }
 
-    handleScroll = (event: WheelEvent<HTMLDivElement>) => {
-        const newState = this.updatePosition(this.state, event.deltaX, event.deltaY, this.props.scale, {x: this.props.width, y: this.props.height});
-        this.setState(newState);
-        this.canvas?.absolutePan(new fabric.Point(newState.left, newState.top));
+    handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+        if (!event.shiftKey) {
+            const newState = this.updatePosition(this.state, event.deltaX, event.deltaY, this.props.scale, {x: this.props.width, y: this.props.height});
+            this.setState(newState);
+            this.canvas?.absolutePan(new fabric.Point(newState.left, newState.top));
+        }
+
+        if (event.shiftKey) {
+            if (event.deltaY < 0) {
+                this.props.onZoom(1);
+            }
+            else {
+                this.props.onZoom(-1);
+            }
+        }
     }
 
     render() {
         const {width, height} = this.props;
 
         return (
-            <div className="WhiteBoard-viewport" onWheel={this.handleScroll}>
+            <div className="WhiteBoard-viewport" onWheel={this.handleWheel}>
                 <canvas
                     id="canvas-whiteboard"
                     width={width}

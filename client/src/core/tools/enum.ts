@@ -4,4 +4,5 @@ export enum Tools {
   MARKER = 'MARKER',
   RECTANGLE = 'RECTANGLE',
   ELLIPSE = 'ELLIPSE',
+  SELECTOR = 'SELECTOR',
 }

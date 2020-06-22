@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { WhiteBoard } from 'core';
 import { toolShortcut } from 'modules/workspaces/hooks/keys';
 import { Header, Footer, Toolbar, Navigation } from '..';
 import { Zoombar } from '../Zoombar/Zoombar';
 import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
 import { windowSize } from 'core/helpers/window.helper';
 import { windowResize } from 'modules/workspaces/hooks/window';
-import './Workspaces.scss';
 import { Tools } from 'core/tools';
+import { zooming } from 'core/helpers/zoom.helper';
+
+import './Workspaces.scss';
 
 export function Workspaces() {
 
   const [boardSize, setBoardSize] = useState(windowSize());
-  const [tool, setTool] = useState(Tools.MARKER);
+  const [tool, setTool] = useState(Tools.SELECTOR);
   const [zoom, setZoom] = useState(1);
+  const [step, min, max] = [.1, .5, 1.5];
+  const calculateZoom = zooming({step, min, max});
 
   useEffect(windowResize(() => setBoardSize(windowSize())));
   useEffect(toolShortcut(setTool), []);
@@ -22,8 +25,8 @@ export function Workspaces() {
     setTool(newTool);
   }
 
-  const handleZoom = (scale: number) => {
-    setZoom(scale);
+  const handleZoom = (value: number) => {
+    setZoom(calculateZoom(zoom, value));
   }
 
   const boardWidth = boardSize.width;
@@ -43,6 +46,7 @@ export function Workspaces() {
           margins={0}
           lineSize={1}
           scale={zoom}
+          onZoom={handleZoom}
           tool={tool}
           width={boardWidth}
         />
