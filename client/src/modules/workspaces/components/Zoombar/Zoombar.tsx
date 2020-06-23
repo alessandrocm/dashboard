@@ -2,7 +2,6 @@ import './Zoombar.scss';
 import React from 'react';
 import { Button } from 'shared/components';
 import { PlusIcon, MinusIcon, Slider } from 'shared/components';
-import { zooming } from 'core/helpers/zoom.helper';
 
 export interface ZoombarProps {
   zoom: number;
@@ -32,7 +31,8 @@ export function Zoombar(zoomProps: ZoombarProps) {
   
     const handleZoom = (value: number) => {
       if (zoomProps.onZoom) {
-        zoomProps.onZoom(value);
+        const zoom = (zoomProps.zoom === value) ? 0 : ((zoomProps.zoom > value) ? -1 : 1);
+        zoomProps.onZoom(zoom);
       }
     }
 

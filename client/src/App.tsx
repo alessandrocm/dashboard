@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes } from './modules/home/Routes';
+import { Routes } from './modules/Routes';
 
 
 function App() {

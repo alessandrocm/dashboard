@@ -1,7 +1,6 @@
 import React, { WheelEvent } from 'react';
 import { fabric } from 'fabric';
 import { gridPattern } from 'core/helpers/grid.helper';
-import { ICoordinate } from 'core/tools/Tool';
 import { getWidth, getHeight } from 'core/helpers/window.helper';
 import { FabricTool, IFabricTool } from 'core/tools/fabric/FabricTool';
 import { Tools } from 'core/tools';
@@ -10,7 +9,7 @@ import { Rectangle } from 'core/tools/fabric/Rectangle';
 import { Ellipse } from 'core/tools/fabric/Ellipse';
 import { Selector } from 'core/tools/fabric/Selector';
 
-export interface WhiteBoard2Props {
+export interface WhiteBoardProps {
     color: string;
     fillColor: string;
     height: number;
@@ -22,7 +21,7 @@ export interface WhiteBoard2Props {
     onZoom: (value: number) => void;
 }
 
-export interface WhiteBoard2State {
+export interface WhiteBoardState {
     position: "fixed";
     windowHeight: number;
     windowWidth: number;
@@ -30,12 +29,12 @@ export interface WhiteBoard2State {
     left: number;
 }
 
-export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2State> {
+export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState> {
 
     private canvas?: fabric.Canvas;
     private tool: IFabricTool | null = null;
 
-    constructor(props: WhiteBoard2Props) {
+    constructor(props: WhiteBoardProps) {
         super(props);
         this.state = this.calculateState();
     }
@@ -48,7 +47,7 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
         gridPattern(this.canvas);
     }
 
-    componentDidUpdate(prevProps: WhiteBoard2Props) {
+    componentDidUpdate(prevProps: WhiteBoardProps) {
         const { scale, height, width, tool } = this.props;
         if (scale !== prevProps.scale) {
             this.zoomCanvas(scale);
@@ -64,12 +63,13 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
     }
 
     // Helper Functions
+
     zoomCanvas(scale: number) {
         const point = this.canvas?.getVpCenter();
         this.canvas?.zoomToPoint(point!, scale);
     }
 
-    selectTool = (tool: string, canvas: fabric.Canvas): FabricTool | null => {
+    selectTool(tool: string, canvas: fabric.Canvas): FabricTool | null {
 
         if (this.tool) {
             this.tool.discard();
@@ -103,7 +103,7 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
         };
     }
 
-    updatePosition(state: WhiteBoard2State, deltaX: number, deltaY: number, scale: number, boardDimensions: ICoordinate) {
+    updatePosition(state: WhiteBoardState, deltaX: number, deltaY: number, scale: number, boardDimensions: {x: number, y: number}) {
         const boardX = (boardDimensions.x * scale);
         const boardY = (boardDimensions.y * scale);
         // If shift values are larger than board width or height, revert back to previous values
@@ -117,6 +117,8 @@ export class WhiteBoard2 extends React.Component<WhiteBoard2Props, WhiteBoard2St
             top,
         };
     }
+
+    // Event Handlers
 
     handleWheel = (event: WheelEvent<HTMLDivElement>) => {
         if (!event.shiftKey) {

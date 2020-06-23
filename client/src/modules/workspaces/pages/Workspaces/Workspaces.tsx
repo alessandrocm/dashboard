@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toolShortcut } from 'modules/workspaces/hooks/keys';
-import { Header, Footer, Toolbar, Navigation } from '..';
-import { Zoombar } from '../Zoombar/Zoombar';
-import { WhiteBoard2 } from 'core/components/WhiteBoard2/WhiteBoard2';
+import { Header, Footer, Toolbar, Navigation, WhiteBoard, Zoombar } from '../../components';
 import { windowSize } from 'core/helpers/window.helper';
 import { windowResize } from 'modules/workspaces/hooks/window';
 import { Tools } from 'core/tools';
@@ -39,7 +37,7 @@ export function Workspaces() {
         <Header>
           <Toolbar selected={tool} onSelect={handleSelectTool} />
         </Header>
-        <WhiteBoard2
+        <WhiteBoard
           color={'black'}
           fillColor={''}
           height={boardHeight}
