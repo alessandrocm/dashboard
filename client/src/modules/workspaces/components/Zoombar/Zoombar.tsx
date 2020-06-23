@@ -22,26 +22,17 @@ export function Zoombar(zoomProps: ZoombarProps) {
 
   const props = Object.assign({}, defaultProps, zoomProps);
 
-  const zoomStep = (value: number) => {
-    const step = 0.1 * value;
-    const scale = Number.parseFloat((props.zoom + step).toPrecision(2));
-    if (scale < .5 || scale > 1.5) {
-      return props.zoom;
-    }
-
-    return scale;
-  }
-
   const handleZoomStep = (value: number) =>
     () => {
       if (zoomProps.onZoom) {
-        zoomProps.onZoom(zoomStep(value));
+        zoomProps.onZoom(value);
       }
     }
   
     const handleZoom = (value: number) => {
       if (zoomProps.onZoom) {
-        zoomProps.onZoom(value);
+        const zoom = (zoomProps.zoom === value) ? 0 : ((zoomProps.zoom > value) ? -1 : 1);
+        zoomProps.onZoom(zoom);
       }
     }
 

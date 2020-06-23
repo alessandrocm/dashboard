@@ -1,3 +1,5 @@
+import { fabric } from 'fabric';
+import merge from 'lodash.merge';
 
 export interface IGridOptions {
   fillStyle: string;
@@ -59,6 +61,81 @@ export function drawGrid(context: CanvasRenderingContext2D, options: Partial<IGr
     context.moveTo(margins, y);
     context.lineTo(gridWidth, y);
     context.stroke();
+  }
+
+}
+
+export interface ICanvasGridLinesOptions {
+  stroke: string;
+  strokeWidth: number;
+  selectable?: false;
+}
+
+export interface ICanvasGridOptions {
+  margin: number;
+  width: number;
+  height: number;
+  lines: ICanvasGridLinesOptions;
+}
+
+export const gridDefaults: ICanvasGridOptions = {
+  margin: 10,
+  height: 800,
+  width: 2000,
+  lines: {
+    stroke: '#eee',
+    strokeWidth: 1,
+    selectable: false,
+  }
+}
+
+export function gridPattern(canvas: fabric.Canvas, options?: ICanvasGridOptions) {
+  const gridOptions = merge({}, gridDefaults, options);
+  const {
+    margin,
+    width,
+    height,
+    lines,
+  } = gridOptions;
+
+  const gridWidth = width;
+  const gridHeight = height;
+  const startValue = margin;
+
+  const rect = new fabric.Rect({
+    left: margin,
+    top: margin,
+    fill: 'white',
+    width: (width - margin),
+    height: (height - margin),
+    selectable: false,
+    stroke: '#ccc',
+    strokeWidth: 1,
+    strokeDashArray: [10, 10],
+    lockMovementX: true,
+    lockMovementY: true,
+    name: '@@background'
+  });
+  canvas.add(rect);
+
+  for (let x = startValue + 10; x < gridWidth; x += 10) {
+    const vertical = new fabric.Line([x, margin, x, gridHeight], lines);
+    vertical.name = '@@background';
+    canvas.add(vertical);
+
+    if((x - startValue) % 50 === 0){
+      vertical.set({stroke: '#cccccc'});
+    };
+  }
+
+  for (let y = startValue + 10; y < gridHeight; y += 10) {
+    const horizontal = new fabric.Line([margin, y, gridWidth, y], lines);
+    horizontal.name = '@@background';
+    canvas.add(horizontal);
+
+    if((y - startValue) % 50 === 0){
+      horizontal.set({stroke: '#cccccc'});
+    };
   }
 
 }

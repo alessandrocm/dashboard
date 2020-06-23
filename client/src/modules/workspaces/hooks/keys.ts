@@ -1,13 +1,13 @@
 import { Tools } from 'core/tools';
 
-export function toolShortcut(handleEffect: (tool: string) => void) {
+export function toolShortcut(handleEffect: (tool: Tools) => void) {
 
   return () => {
 
     const keyHandler = (e: KeyboardEvent) => {
       switch(e.key) {
         case '1':
-          return handleEffect(Tools.PENCIL);
+          return handleEffect(Tools.MARKER);
         case '2':
           return handleEffect(Tools.RECTANGLE);
         case '3':

@@ -7,17 +7,18 @@ import { CircleIcon } from 'shared/components/Icons/Circle';
 import { Tools } from 'core/tools';
 
 import './Toolbar.scss';
+import { MousePointerIcon } from 'shared/components/Icons/Arrow';
 
 export interface ToolbarProps {
   selected?: string;
-  onSelect: (tool: string) => void;
+  onSelect: (tool: Tools) => void;
 }
 
 export function Toolbar(props: ToolbarProps) {
 
   const { selected = '' } = props;
 
-  const handleSelect = (tool: string) => {
+  const handleSelect = (tool: Tools) => {
     return () => props.onSelect(tool);
   }
 
@@ -26,7 +27,8 @@ export function Toolbar(props: ToolbarProps) {
   }
 
   const buttonClass = {'Toolbar-button': true}
-  const pencilClass = classNames(buttonClass, {'selected': isTool(selected, Tools.PENCIL)});
+  const selectorClass = classNames(buttonClass, {'selected': isTool(selected, Tools.SELECTOR)});
+  const pencilClass = classNames(buttonClass, {'selected': isTool(selected, Tools.MARKER)});
   const ellipseClass = classNames(buttonClass, {'selected': isTool(selected, Tools.ELLIPSE)});
   const rectangleClass = classNames(buttonClass, {'selected': isTool(selected, Tools.RECTANGLE)});
 
@@ -34,8 +36,15 @@ export function Toolbar(props: ToolbarProps) {
     <div className="Toolbar">
       <div className="Toolbar-item">
         <Button
+          className={selectorClass}
+          onClick={handleSelect(Tools.SELECTOR)}>
+          <MousePointerIcon />
+        </Button>
+      </div>
+      <div className="Toolbar-item">
+        <Button
           className={pencilClass}
-          onClick={handleSelect(Tools.PENCIL)}>
+          onClick={handleSelect(Tools.MARKER)}>
           <PencilIcon />
         </Button>
       </div>
