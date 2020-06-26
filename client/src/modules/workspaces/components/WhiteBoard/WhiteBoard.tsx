@@ -24,9 +24,6 @@ export interface WhiteBoardProps {
 }
 
 export interface WhiteBoardState {
-    position: "fixed";
-    windowHeight: number;
-    windowWidth: number;
     top: number;
     left: number;
 }
@@ -95,22 +92,13 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
 
     calculateState() {
         this.canvas?.setZoom(this.props.scale);
-        const position: "fixed" = "fixed";
-        const windowHeight = getHeight();
-        const windowWidth = getWidth();
         return {
-            position,
-            windowHeight,
-            windowWidth,
             top: 0,
             left: 0
         };
     }
 
     updatePosition(state: WhiteBoardState, deltaX: number, deltaY: number, scale: number, boardDimensions: {x: number, y: number}) {
-        const boardX = (boardDimensions.x * scale);
-        const boardY = (boardDimensions.y * scale);
-
         const left = state.left + deltaX;
         const top = state.top + deltaY;
 
@@ -119,6 +107,17 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
             left,
             top,
         };
+    }
+
+    centerCanvas() {
+        if (this.canvas) {
+            const [left, top] = [0, 0];
+            this.canvas.absolutePan(new fabric.Point(left, top));
+            return {
+                left,
+                top
+            };
+        }
     }
 
     // Event Handlers
@@ -140,11 +139,18 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
         }
     }
 
+    handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'c') {
+            const newState = this.centerCanvas();
+            this.setState({...this.state, ...newState});
+        }
+    }
+
     render() {
         const {width, height} = this.props;
 
         return (
-            <div className="WhiteBoard-viewport" onWheel={this.handleWheel}>
+            <div className="WhiteBoard-viewport" tabIndex={0} onKeyPress={this.handleKeyPress} onWheel={this.handleWheel}>
                 <canvas
                     id="canvas-whiteboard"
                     width={width}
