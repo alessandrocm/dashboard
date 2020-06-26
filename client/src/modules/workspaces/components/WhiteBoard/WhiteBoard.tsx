@@ -9,6 +9,8 @@ import { Rectangle } from 'core/tools/fabric/Rectangle';
 import { Ellipse } from 'core/tools/fabric/Ellipse';
 import { Selector } from 'core/tools/fabric/Selector';
 
+import './WhiteBoard.scss';
+
 export interface WhiteBoardProps {
     color: string;
     fillColor: string;
@@ -41,10 +43,11 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
 
     componentDidMount() {
         this.canvas = new fabric.Canvas('canvas-whiteboard');
-        this.canvas.backgroundColor = '#eee';
         this.canvas.hoverCursor = 'default';
-        this.tool = this.selectTool(this.props.tool, this.canvas);
+        this.canvas.backgroundColor = '#fff';
+        this.canvas.renderAll();
         gridPattern(this.canvas);
+        this.tool = this.selectTool(this.props.tool, this.canvas);
     }
 
     componentDidUpdate(prevProps: WhiteBoardProps) {

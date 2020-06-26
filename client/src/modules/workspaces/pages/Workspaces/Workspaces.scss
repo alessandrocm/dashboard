@@ -1,4 +1,4 @@
-@import '../../../../core/styles/colors';
+@import '../../../../assets/styles/colors';
 
 .Workspaces {
   display: flex;
@@ -21,15 +21,6 @@
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: $white;
-
-    .Workspaces-viewport {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow: hidden;
-    }
   
   }
 
