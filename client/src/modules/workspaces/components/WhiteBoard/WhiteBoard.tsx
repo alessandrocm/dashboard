@@ -45,6 +45,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
         this.canvas = new fabric.Canvas('canvas-whiteboard');
         this.canvas.hoverCursor = 'default';
         this.canvas.backgroundColor = '#fff';
+        this.canvas.centeredScaling = true;
         this.canvas.renderAll();
         gridPattern(this.canvas);
         this.tool = this.selectTool(this.props.tool, this.canvas);
@@ -68,8 +69,8 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
     // Helper Functions
 
     zoomCanvas(scale: number) {
-        const point = this.canvas?.getVpCenter();
-        this.canvas?.zoomToPoint(point!, scale);
+        const {top = 0, left = 0} = this.canvas?.getCenter() || {};
+        this.canvas?.zoomToPoint(new fabric.Point(top, left), scale);
     }
 
     selectTool(tool: string, canvas: fabric.Canvas): FabricTool | null {
@@ -109,10 +110,9 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
     updatePosition(state: WhiteBoardState, deltaX: number, deltaY: number, scale: number, boardDimensions: {x: number, y: number}) {
         const boardX = (boardDimensions.x * scale);
         const boardY = (boardDimensions.y * scale);
-        // If shift values are larger than board width or height, revert back to previous values
-        // If previous values are larger than board (due to zooming), revert to board height or width
-        const left = (Math.abs(state.left + deltaX) < boardX) ? state.left + deltaX : (Math.abs(state.left) < boardX) ? state.left : (boardX - 10);
-        const top = (Math.abs(state.top + deltaY) < boardY) ? state.top + deltaY: (Math.abs(state.top) < boardY) ? state.top : (boardY - 10);
+
+        const left = state.left + deltaX;
+        const top = state.top + deltaY;
 
         return {
             ...state,
