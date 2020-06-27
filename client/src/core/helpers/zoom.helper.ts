@@ -1,4 +1,10 @@
 
+export const zoomSettings = {
+  step: 0.1,
+  min: .5,
+  max: 1.5
+};
+
 export interface ZoomOptions {
   min?: number;
   max?: number;

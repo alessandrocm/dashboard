@@ -1,7 +1,9 @@
-import './Zoombar.scss';
 import React from 'react';
 import { Button } from 'shared/components';
 import { PlusIcon, MinusIcon, Slider } from 'shared/components';
+import { zoomSettings } from 'core/helpers/zoom.helper';
+
+import './Zoombar.scss';
 
 export interface ZoombarProps {
   zoom: number;
@@ -13,9 +15,7 @@ export interface ZoombarProps {
 
 const defaultProps: ZoombarProps = {
   zoom: 1,
-  min: .5,
-  max: 1.5,
-  step: .1
+  ...zoomSettings
 }
 
 export function Zoombar(zoomProps: ZoombarProps) {
@@ -24,15 +24,15 @@ export function Zoombar(zoomProps: ZoombarProps) {
 
   const handleZoomStep = (value: number) =>
     () => {
-      if (zoomProps.onZoom) {
-        zoomProps.onZoom(value);
+      if (props.onZoom) {
+        props.onZoom(value);
       }
     }
   
     const handleZoom = (value: number) => {
-      if (zoomProps.onZoom) {
-        const zoom = (zoomProps.zoom === value) ? 0 : ((zoomProps.zoom > value) ? -1 : 1);
-        zoomProps.onZoom(zoom);
+      if (props.onZoom) {
+        const zoom = (props.zoom === value) ? 0 : ((props.zoom > value) ? -1 : 1);
+        props.onZoom(zoom);
       }
     }
 
@@ -45,10 +45,10 @@ export function Zoombar(zoomProps: ZoombarProps) {
       </Button>
       <Slider
         onChange={handleZoom}
-        min={.5}
-        max={1.5}
-        step={.1}
-        value={zoomProps.zoom} />
+        min={props.min}
+        max={props.max}
+        step={props.step}
+        value={props.zoom} />
       <Button
         onClick={handleZoomStep(1)}
         className="Zoombar-button">

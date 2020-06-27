@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import { FabricTool, IFabricToolOptions } from "./FabricTool"
-import { MouseEvents } from "./FabricEvents";
+import { Tools } from "../enum";
 
 export class Selector extends FabricTool {
 
@@ -10,11 +10,16 @@ export class Selector extends FabricTool {
     super(canvas, options);
 
     this.selectionStatus(true);
-    
+    this.canvas.defaultCursor = 'default';
+    this.canvas.hoverCursor = 'move';
     const element = canvas.getElement();
     element.addEventListener('keydown', this.onKeyDown);
     element.addEventListener('keyup', this.onKeyUp);
     
+  }
+
+  get toolType() {
+    return Tools.SELECTOR;
   }
 
   onKeyDown = (event: KeyboardEvent) => {

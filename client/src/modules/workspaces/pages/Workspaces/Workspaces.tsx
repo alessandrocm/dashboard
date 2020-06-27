@@ -4,7 +4,7 @@ import { Header, Footer, Toolbar, Navigation, WhiteBoard, Zoombar } from '../../
 import { windowSize } from 'core/helpers/window.helper';
 import { windowResize } from 'modules/workspaces/hooks/window';
 import { Tools } from 'core/tools';
-import { zooming } from 'core/helpers/zoom.helper';
+import { zooming, zoomSettings } from 'core/helpers/zoom.helper';
 
 import './Workspaces.scss';
 
@@ -13,8 +13,7 @@ export function Workspaces() {
   const [boardSize, setBoardSize] = useState(windowSize());
   const [tool, setTool] = useState(Tools.SELECTOR);
   const [zoom, setZoom] = useState(1);
-  const [step, min, max] = [.1, .5, 1.5];
-  const calculateZoom = zooming({step, min, max});
+  const calculateZoom = zooming(zoomSettings);
 
   useEffect(windowResize(() => setBoardSize(windowSize())));
   useEffect(toolShortcut(setTool), []);
@@ -44,9 +43,10 @@ export function Workspaces() {
           margins={0}
           lineSize={1}
           scale={zoom}
-          onZoom={handleZoom}
           tool={tool}
           width={boardWidth}
+          onZoom={handleZoom}
+          onToolSelect={handleSelectTool}
         />
         <Footer>
           <Zoombar

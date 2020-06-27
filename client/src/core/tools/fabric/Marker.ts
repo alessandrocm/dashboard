@@ -24,6 +24,10 @@ export class Marker extends FabricTool {
     }
   }
 
+  get toolType() {
+    return Tools.MARKER;
+  }
+
   onMouseDown = (event: fabric.IEvent) => {
 
     this.stroke = {

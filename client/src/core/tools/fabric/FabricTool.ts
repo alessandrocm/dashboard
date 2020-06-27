@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { Tools } from "../enum";
 
 export interface IFabricDrawing {
   id: string;
@@ -27,6 +28,8 @@ export interface IFabricToolOptions {
 }
 
 export interface IFabricTool {
+
+  toolType: Tools;
 
   onMouseDown(event: fabric.IEvent): void;
 
@@ -62,6 +65,8 @@ export abstract class FabricTool extends EventEmitter implements IFabricTool{
       (object) => object.selectable = (object.name !== '@@background') && status
     );
   }
+
+  abstract get toolType(): Tools;
 
   abstract onMouseDown(event: fabric.IEvent): void;
 
