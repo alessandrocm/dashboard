@@ -12,9 +12,15 @@ export class Rectangle extends FabricTool {
     super(canvas, options);
 
     this.selectionStatus(false);
+    this.canvas.defaultCursor = 'crosshair';
+    this.canvas.hoverCursor = 'crosshair';
     this.canvas.on(MouseEvents.MOUSE_DOWN, this.onMouseDown);
     this.canvas.on(MouseEvents.MOUSE_UP, this.onMouseUp);
     this.canvas.on(MouseEvents.MOUSE_MOVE, this.onMouseMove);
+  }
+
+  get toolType() {
+    return Tools.RECTANGLE;
   }
 
   onMouseDown = (event: fabric.IEvent) => {

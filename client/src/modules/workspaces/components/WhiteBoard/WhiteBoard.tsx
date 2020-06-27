@@ -1,8 +1,7 @@
 import React, { WheelEvent } from 'react';
 import { fabric } from 'fabric';
 import { gridPattern } from 'core/helpers/grid.helper';
-import { getWidth, getHeight } from 'core/helpers/window.helper';
-import { FabricTool, IFabricTool } from 'core/tools/fabric/FabricTool';
+import { IFabricTool } from 'core/tools/fabric/FabricTool';
 import { Tools } from 'core/tools';
 import { Marker } from 'core/tools/fabric/Marker';
 import { Rectangle } from 'core/tools/fabric/Rectangle';
@@ -17,10 +16,11 @@ export interface WhiteBoardProps {
     height: number;
     lineSize: number;
     scale: number;
-    tool: string;
+    tool: Tools;
     width: number;
     margins: number;
     onZoom: (value: number) => void;
+    onToolSelect: (tool: Tools) => void;
 }
 
 export interface WhiteBoardState {
@@ -45,11 +45,12 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
         this.canvas.centeredScaling = true;
         this.canvas.renderAll();
         gridPattern(this.canvas);
-        this.tool = this.selectTool(this.props.tool, this.canvas);
+        this.selectTool(this.props.tool, this.canvas);
     }
 
-    componentDidUpdate(prevProps: WhiteBoardProps) {
+    componentDidUpdate(prevProps: WhiteBoardProps, prevState: WhiteBoardState) {
         const { scale, height, width, tool } = this.props;
+        const { top, left } = this.state;
         if (scale !== prevProps.scale) {
             this.zoomCanvas(scale);
         }
@@ -59,7 +60,10 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
             this.canvas?.calcOffset();
         }
         if (prevProps.tool !== tool) {
-            this.tool = this.selectTool(tool, this.canvas!);
+            this.selectTool(tool, this.canvas!);
+        }
+        if (prevState.top !== top || prevState.left !== left) {
+            this.canvas?.absolutePan(new fabric.Point(left, top));
         }
     }
 
@@ -70,22 +74,29 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
         this.canvas?.zoomToPoint(new fabric.Point(top, left), scale);
     }
 
-    selectTool(tool: string, canvas: fabric.Canvas): FabricTool | null {
+    selectTool(tool: Tools, canvas: fabric.Canvas) {
 
-        if (this.tool) {
-            this.tool.discard();
-            this.tool = null;
-        }
+        const prevTool = this.tool?.toolType || Tools.SELECTOR;
+        this.tool?.discard();
+        this.tool = null;
+
 
         switch (tool) {
             case Tools.RECTANGLE:
-                return new Rectangle(canvas, this.props);
+                this.tool = new Rectangle(canvas, this.props);
+                break;
             case Tools.MARKER:
-                return new Marker(canvas, this.props);
+                this.tool = new Marker(canvas, this.props);
+                break;
             case Tools.ELLIPSE:
-                return new Ellipse(canvas, this.props);
+                this.tool = new Ellipse(canvas, this.props);
+                break;
+            case Tools.CROSSHAIR:
+                this.centerCanvas();
+                this.props.onToolSelect(prevTool);
+                break;
             default:
-                return new Selector(canvas, this.props);
+                this.tool = new Selector(canvas, this.props);
         }
 
     }
@@ -102,21 +113,17 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
         const left = state.left + deltaX;
         const top = state.top + deltaY;
 
-        return {
+        this.setState({
             ...state,
             left,
             top,
-        };
+        });
     }
 
     centerCanvas() {
         if (this.canvas) {
             const [left, top] = [0, 0];
-            this.canvas.absolutePan(new fabric.Point(left, top));
-            return {
-                left,
-                top
-            };
+            this.setState({...this.state, left, top});
         }
     }
 
@@ -124,9 +131,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
 
     handleWheel = (event: WheelEvent<HTMLDivElement>) => {
         if (!event.shiftKey) {
-            const newState = this.updatePosition(this.state, event.deltaX, event.deltaY, this.props.scale, {x: this.props.width, y: this.props.height});
-            this.setState(newState);
-            this.canvas?.absolutePan(new fabric.Point(newState.left, newState.top));
+            this.updatePosition(this.state, event.deltaX, event.deltaY, this.props.scale, {x: this.props.width, y: this.props.height});
         }
 
         if (event.shiftKey) {
@@ -141,8 +146,7 @@ export class WhiteBoard extends React.Component<WhiteBoardProps, WhiteBoardState
 
     handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'c') {
-            const newState = this.centerCanvas();
-            this.setState({...this.state, ...newState});
+            this.centerCanvas();
         }
     }
 

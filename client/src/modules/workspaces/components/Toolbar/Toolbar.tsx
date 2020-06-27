@@ -8,6 +8,7 @@ import { Tools } from 'core/tools';
 
 import './Toolbar.scss';
 import { MousePointerIcon } from 'shared/components/Icons/Arrow';
+import { CrosshairsIcon } from 'shared/components/Icons/Crosshairs';
 
 export interface ToolbarProps {
   selected?: string;
@@ -27,6 +28,7 @@ export function Toolbar(props: ToolbarProps) {
   }
 
   const buttonClass = {'Toolbar-button': true}
+  const crosshairClass = classNames(buttonClass);
   const selectorClass = classNames(buttonClass, {'selected': isTool(selected, Tools.SELECTOR)});
   const pencilClass = classNames(buttonClass, {'selected': isTool(selected, Tools.MARKER)});
   const ellipseClass = classNames(buttonClass, {'selected': isTool(selected, Tools.ELLIPSE)});
@@ -34,6 +36,13 @@ export function Toolbar(props: ToolbarProps) {
 
   return (
     <div className="Toolbar">
+      <div className="Toolbar-item">
+        <Button
+          className={crosshairClass}
+          onClick={handleSelect(Tools.CROSSHAIR)}>
+          <CrosshairsIcon />
+        </Button>
+      </div>
       <div className="Toolbar-item">
         <Button
           className={selectorClass}

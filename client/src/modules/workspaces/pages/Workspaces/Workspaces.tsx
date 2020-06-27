@@ -13,8 +13,7 @@ export function Workspaces() {
   const [boardSize, setBoardSize] = useState(windowSize());
   const [tool, setTool] = useState(Tools.SELECTOR);
   const [zoom, setZoom] = useState(1);
-  const {step, min, max} = zoomSettings;
-  const calculateZoom = zooming({step, min, max});
+  const calculateZoom = zooming(zoomSettings);
 
   useEffect(windowResize(() => setBoardSize(windowSize())));
   useEffect(toolShortcut(setTool), []);
@@ -44,9 +43,10 @@ export function Workspaces() {
           margins={0}
           lineSize={1}
           scale={zoom}
-          onZoom={handleZoom}
           tool={tool}
           width={boardWidth}
+          onZoom={handleZoom}
+          onToolSelect={handleSelectTool}
         />
         <Footer>
           <Zoombar

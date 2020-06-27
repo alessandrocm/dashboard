@@ -2,7 +2,6 @@ import { FabricTool, IFabricShape, IFabricToolOptions } from "./FabricTool";
 import { fabric } from "fabric";
 import { MouseEvents, ToolEvents } from "./FabricEvents";
 import { generate } from "shortid";
-import { Circle, Rect } from "fabric/fabric-impl";
 import { Tools } from "../enum";
 
 export class Ellipse extends FabricTool {
@@ -13,9 +12,15 @@ export class Ellipse extends FabricTool {
     super(canvas, options);
 
     this.selectionStatus(false);
+    this.canvas.defaultCursor = 'crosshair';
+    this.canvas.hoverCursor = 'crosshair';
     this.canvas.on(MouseEvents.MOUSE_DOWN, this.onMouseDown);
     this.canvas.on(MouseEvents.MOUSE_UP, this.onMouseUp);
     this.canvas.on(MouseEvents.MOUSE_MOVE, this.onMouseMove);
+  }
+
+  get toolType() {
+    return Tools.ELLIPSE;
   }
 
   onMouseDown = (event: fabric.IEvent) => {
